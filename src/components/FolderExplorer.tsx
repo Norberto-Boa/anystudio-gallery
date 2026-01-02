@@ -7,14 +7,12 @@ import {
   Button,
   CircularProgress,
   Dialog,
-  IconButton,
 } from "@mui/material";
 import FolderIcon from "@mui/icons-material/Folder";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import DownloadIcon from "@mui/icons-material/Download";
 import { fetchFolderContents } from "../services/drive";
 import FolderCard from "./FolderCard";
-import CloseIcon from "@mui/icons-material/Close";
 
 interface DriveItem {
   id: string;
@@ -23,8 +21,6 @@ interface DriveItem {
   thumbnailLink?: string;
   webContentLink?: string;
 }
-
-import { useTheme, useMediaQuery } from "@mui/material";
 
 export default function FolderExplorer({
   rootFolderId,
@@ -35,9 +31,6 @@ export default function FolderExplorer({
   const [items, setItems] = useState<DriveItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [lightboxImage, setLightboxImage] = useState<DriveItem | null>(null);
-
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const currentFolderId =
     stack.length === 0 ? rootFolderId : stack[stack.length - 1].id;
@@ -63,39 +56,19 @@ export default function FolderExplorer({
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      <IconButton
-        onClick={() => setLightboxImage(null)}
-        sx={{
-          position: "absolute",
-          top: 16,
-          right: 16,
-          color: "white",
-          zIndex: 10,
-        }}
-      >
-        <CloseIcon />
-      </IconButton>
       <Dialog
         open={!!lightboxImage}
         onClose={() => setLightboxImage(null)}
-        fullScreen={isMobile}
-        maxWidth={false}
-        PaperProps={{
-          style: {
-            backgroundColor: "black",
-            margin: 0,
-          },
-        }}
+        maxWidth="lg"
+        className="overflow-hidden"
+        scroll="body"
       >
         {lightboxImage && (
           <img
             src={`https://www.googleapis.com/drive/v3/files/${
               lightboxImage.id
             }?alt=media&key=${import.meta.env.VITE_GOOGLE_API_KEY}`}
-            className="max-w-full max-h-screen object-contain mx-auto"
-            style={{
-              touchAction: "pan-y",
-            }}
+            className="max-h-[90vh] max-w-full object-contain"
           />
         )}
       </Dialog>
@@ -133,7 +106,7 @@ export default function FolderExplorer({
               <Card
                 key={item.id}
                 className="rounded-xl shadow break-inside-avoid"
-                onClick={() => setLightboxImage(item)}
+                 onClick={() => setLightboxImage(item)}
               >
                 <CardMedia
                   component="img"
