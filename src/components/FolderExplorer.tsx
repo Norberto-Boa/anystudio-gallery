@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   Card,
+  CardActionArea,
   CardContent,
   CardMedia,
   Button,
@@ -8,6 +9,7 @@ import {
   Dialog,
   IconButton,
 } from "@mui/material";
+import FolderIcon from "@mui/icons-material/Folder";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import DownloadIcon from "@mui/icons-material/Download";
 import { fetchFolderContents } from "../services/drive";
@@ -156,7 +158,7 @@ export default function FolderExplorer({
                     size="small"
                     variant="contained"
                     startIcon={<DownloadIcon />}
-                    href={item.webContentLink ?? ""}
+                    href={item.webContentLink}
                     download
                   >
                     Download
