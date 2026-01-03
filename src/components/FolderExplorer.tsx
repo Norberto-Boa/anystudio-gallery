@@ -25,14 +25,16 @@ export default function FolderExplorer({
 }: {
   rootFolderId: string;
 }) {
-  const [stack, setStack] = useState<DriveItem[]>([]);
-  const [items, setItems] = useState<DriveItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [stack, setStack] = useState<DriveItem[]>([]); // Important for navigation, determines current folder!
+  const [items, setItems] = useState<DriveItem[]>([]); // Current folder items
+  const [loading, setLoading] = useState(true); 
   const [lightboxImage, setLightboxImage] = useState<DriveItem | null>(null);
 
+  // Determine current folder ID based on stack
   const currentFolderId =
-    stack.length === 0 ? rootFolderId : stack[stack.length - 1].id;
+    stack.length === 0 ? rootFolderId : stack[stack.length - 1].id; 
 
+  // Fetch new contents when current folder changes
   useEffect(() => {
     load();
   }, [currentFolderId]);
@@ -79,7 +81,7 @@ export default function FolderExplorer({
         )}
 
         <span className="text-sm text-gray-500">
-          {stack.map((f) => f.name).join(" / ") || "Root"}
+          {stack.map((f) => f.name).join(" / ") || "📸Fotos da Liga Bancaria"}
         </span>
       </div>
 
@@ -93,6 +95,7 @@ export default function FolderExplorer({
             const isFolder =
               item.mimeType === "application/vnd.google-apps.folder";
 
+              // Check if is folder, render folderCard 
             if (isFolder) {
               return (
                 <FolderCard folder={item} onClick={() => enterFolder(item)} />
@@ -119,7 +122,7 @@ export default function FolderExplorer({
                   }
                 />
 
-                <CardContent className="text-sm truncate">
+                <CardContent className="text-sm truncate text-center font-medium">
                   {item.name}
                 </CardContent>
 
@@ -127,7 +130,7 @@ export default function FolderExplorer({
                   <Button
                     type="button"
                     size="small"
-                    variant="contained"
+                    variant="outlined"
                     startIcon={<DownloadIcon />}
                     href={item.webContentLink ?? ""}
                     download

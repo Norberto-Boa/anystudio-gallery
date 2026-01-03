@@ -37,7 +37,7 @@ export default function FolderCard({ folder, onClick }: Props) {
             {loading ? (
               <div className="animate-pulse w-full h-full bg-gray-200" />
             ) : (
-              <FolderIcon className="text-6xl text-blue-600" />
+              <FolderIcon className="text-6xl text-blue-800" />
             )}
           </div>
         )}

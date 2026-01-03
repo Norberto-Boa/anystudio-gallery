@@ -7,8 +7,10 @@ export default function App() {
   // }
 
   return (
+    <>
     <FolderExplorer
       rootFolderId={import.meta.env.VITE_DRIVE_ROOT_FOLDER_ID}
     />
+    </>
   );
 }
