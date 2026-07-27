@@ -2,7 +2,7 @@ const API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
 
 export async function fetchFolderContents(
   folderId: string,
-  pageToken?: string
+  pageToken?: string,
 ) {
   const params = new URLSearchParams({
     q: `'${folderId}' in parents`,
@@ -17,7 +17,7 @@ export async function fetchFolderContents(
   if (pageToken) params.append("pageToken", pageToken);
 
   const res = await fetch(
-    `https://www.googleapis.com/drive/v3/files?${params.toString()}`
+    `https://www.googleapis.com/drive/v3/files?${params.toString()}`,
   );
 
   if (!res.ok) throw new Error("Failed to fetch folder contents");
@@ -35,8 +35,10 @@ export async function fetchFolderCover(folderId: string) {
     key: import.meta.env.VITE_GOOGLE_API_KEY,
   });
 
+  console.log(params);
+
   const res = await fetch(
-    `https://www.googleapis.com/drive/v3/files?${params}`
+    `https://www.googleapis.com/drive/v3/files?${params}`,
   );
 
   const data = await res.json();
