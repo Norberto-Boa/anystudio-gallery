@@ -25,6 +25,7 @@ export function ImageCard({
         height={"220"}
         className="object-cover"
         image={previewUrl}
+        referrerPolicy="no-referrer"
       />
 
       <div className="flex justify-center pb-3">
