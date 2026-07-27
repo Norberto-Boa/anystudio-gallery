@@ -8,5 +8,5 @@ export const Route = createFileRoute("/gallery/$folderId")({
 function GalleryPage() {
   const { folderId } = Route.useParams();
 
-  return <FolderExplorer rootFolderId={folderId} />;
+  return <FolderExplorer folderId={folderId} />;
 }

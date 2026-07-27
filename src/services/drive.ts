@@ -8,7 +8,8 @@ export async function fetchFolderContents(
     q: `'${folderId}' in parents`,
     fields:
       "nextPageToken,files(id,name,mimeType,thumbnailLink,webContentLink)",
-    pageSize: "100",
+    pageSize: "300",
+    orderBy: "name desc",
     supportsAllDrives: "true",
     includeItemsFromAllDrives: "true",
     key: API_KEY,
@@ -27,19 +28,22 @@ export async function fetchFolderContents(
 
 export async function fetchFolderCover(folderId: string) {
   const params = new URLSearchParams({
-    q: `'${folderId}' in parents and mimeType contains 'image/'`,
-    fields: "files(id,thumbnailLink)",
+    q: `'${folderId}' in parents and mimeType contains 'image/' and trashed = false`,
+    fields: "files(id,thumbnailLink, mimeType,webContentLink)",
     pageSize: "1",
+    orderBy: "createdTime desc",
     supportsAllDrives: "true",
     includeItemsFromAllDrives: "true",
     key: import.meta.env.VITE_GOOGLE_API_KEY,
   });
 
-  console.log(params);
-
   const res = await fetch(
     `https://www.googleapis.com/drive/v3/files?${params}`,
   );
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch folder cover");
+  }
 
   const data = await res.json();
   return data.files?.[0] ?? null;

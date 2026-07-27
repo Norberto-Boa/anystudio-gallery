@@ -11,6 +11,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import DownloadIcon from "@mui/icons-material/Download";
 import { fetchFolderContents } from "../services/drive";
 import FolderCard from "./FolderCard";
+import { useNavigate } from "@tanstack/react-router";
 
 interface DriveItem {
   id: string;
@@ -20,19 +21,18 @@ interface DriveItem {
   webContentLink?: string;
 }
 
-export default function FolderExplorer({
-  rootFolderId,
-}: {
-  rootFolderId: string;
-}) {
-  const [stack, setStack] = useState<DriveItem[]>([]); // Important for navigation, determines current folder!
+interface FolderExplorerProps {
+  folderId: string;
+}
+
+export default function FolderExplorer({ folderId }: FolderExplorerProps) {
+  const navigate = useNavigate();
+
   const [items, setItems] = useState<DriveItem[]>([]); // Current folder items
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
   const [lightboxImage, setLightboxImage] = useState<DriveItem | null>(null);
 
-  // Determine current folder ID based on stack
-  const currentFolderId =
-    stack.length === 0 ? rootFolderId : stack[stack.length - 1].id; 
+  const currentFolderId = folderId;
 
   // Fetch new contents when current folder changes
   useEffect(() => {
@@ -40,18 +40,29 @@ export default function FolderExplorer({
   }, [currentFolderId]);
 
   async function load() {
-    setLoading(true);
-    const data = await fetchFolderContents(currentFolderId);
-    setItems(data.files);
-    setLoading(false);
+    try {
+      setLoading(true);
+      const data = await fetchFolderContents(currentFolderId);
+      setItems(data.files ?? []);
+    } catch (error) {
+      console.error("Erro ao carregar pasta:", error);
+      setItems([]);
+    } finally {
+      setLoading(false);
+    }
   }
 
   function enterFolder(folder: DriveItem) {
-    setStack((prev) => [...prev, folder]);
+    navigate({
+      to: "/gallery/$folderId",
+      params: {
+        folderId: folder.id,
+      },
+    });
   }
 
   function goBack() {
-    setStack((prev) => prev.slice(0, -1));
+    window.history.back();
   }
 
   return (
@@ -72,16 +83,15 @@ export default function FolderExplorer({
           />
         )}
       </Dialog>
+
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 mb-6">
-        {stack.length > 0 && (
-          <Button startIcon={<ArrowBackIcon />} onClick={goBack}>
-            Back
-          </Button>
-        )}
+        <Button startIcon={<ArrowBackIcon />} onClick={goBack}>
+          Back
+        </Button>
 
         <span className="text-sm text-gray-500">
-          {stack.map((f) => f.name).join(" / ") || "📸Fotos da Liga Bancaria"}
+          {"📸Fotos da Liga Bancaria"}
         </span>
       </div>
 
@@ -95,10 +105,14 @@ export default function FolderExplorer({
             const isFolder =
               item.mimeType === "application/vnd.google-apps.folder";
 
-              // Check if is folder, render folderCard 
+            // Check if is folder, render folderCard
             if (isFolder) {
               return (
-                <FolderCard folder={item} onClick={() => enterFolder(item)} />
+                <FolderCard
+                  folder={item}
+                  onClick={() => enterFolder(item)}
+                  key={item.id}
+                />
               );
             }
 
@@ -107,7 +121,7 @@ export default function FolderExplorer({
               <Card
                 key={item.id}
                 className="rounded-xl shadow break-inside-avoid"
-                 onClick={() => setLightboxImage(item)}
+                onClick={() => setLightboxImage(item)}
               >
                 <CardMedia
                   component="img"
@@ -120,6 +134,7 @@ export default function FolderExplorer({
                           item.id
                         }?alt=media&key=${import.meta.env.VITE_GOOGLE_API_KEY}`
                   }
+                  referrerPolicy="no-referrer"
                 />
 
                 <CardContent className="text-sm truncate text-center font-medium">
