@@ -1,5 +1,13 @@
 const API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
 
+export interface DriveItem {
+  id: string;
+  name: string;
+  mimeType: string;
+  thumbnailLink?: string;
+  webContentLink?: string;
+}
+
 export async function fetchFolderContents(
   folderId: string,
   pageToken?: string,
