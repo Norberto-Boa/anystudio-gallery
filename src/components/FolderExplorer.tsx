@@ -6,6 +6,7 @@ import {
   Button,
   CircularProgress,
   Dialog,
+  IconButton,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import DownloadIcon from "@mui/icons-material/Download";
@@ -31,6 +32,44 @@ export default function FolderExplorer({ folderId }: FolderExplorerProps) {
   const [items, setItems] = useState<DriveItem[]>([]); // Current folder items
   const [loading, setLoading] = useState(true);
   const [lightboxImage, setLightboxImage] = useState<DriveItem | null>(null);
+
+  const images = items.filter(
+    (item) =>
+      item.mimeType.startsWith("image/") ||
+      item.thumbnailLink ||
+      item.webContentLink,
+  );
+
+  const currentImageIndex = lightboxImage
+    ? images.findIndex((image) => image.id === lightboxImage.id)
+    : -1;
+
+  const hasPreviouseImage = currentImageIndex > 0;
+  const hasNextImage = currentImageIndex < images.length - 1;
+
+  function goToPreviousImage() {
+    if (!hasPreviouseImage) return;
+
+    setLightboxImage(images[currentImageIndex - 1]);
+  }
+
+  function goToNextImage() {
+    if (!hasNextImage) return;
+
+    setLightboxImage(images[currentImageIndex + 1]);
+  }
+
+  function getImageUrl(image: DriveItem) {
+    return `https://www.googleapis.com/drive/v3/files/${image.id}?alt=media&key=${
+      import.meta.env.VITE_GOOGLE_API_KEY
+    }`;
+  }
+
+  function getPreviewUrl(image: DriveItem) {
+    return image.thumbnailLink
+      ? image.thumbnailLink.replace("=s220", "=s800")
+      : getImageUrl(image);
+  }
 
   const currentFolderId = folderId;
 
