@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Card, CardActionArea, CardContent, CardMedia } from "@mui/material";
 import FolderIcon from "@mui/icons-material/Folder";
-import { fetchFolderCover } from "../services/drive";
+import { fetchFolderCover, type DriveItem } from "../services/drive";
 
 interface DriveCover {
   id: string;
@@ -12,10 +12,7 @@ interface DriveCover {
 }
 
 interface Props {
-  folder: {
-    id: string;
-    name: string;
-  };
+  folder: DriveItem;
   onClick: () => void;
 }
 
@@ -30,7 +27,7 @@ export default function FolderCard({ folder, onClick }: Props) {
       try {
         setLoading(true);
 
-        const img = await fetchFolderCover(folder.id);
+        const img = await fetchFolderCover(folder.id, folder.resourceKey);
 
         if (!active) return;
 

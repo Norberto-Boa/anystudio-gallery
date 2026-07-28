@@ -13,26 +13,30 @@ import DownloadIcon from "@mui/icons-material/Download";
 import CloseIcon from "@mui/icons-material/Close";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import { fetchFolderContents } from "../services/drive";
+import { fetchFolderContents, type DriveItem } from "../services/drive";
 import FolderCard from "./FolderCard";
 import { useNavigate } from "@tanstack/react-router";
 import { Lightbox } from "./Lightbox";
 import { Breadcrumb } from "./Breadcrumb";
 import { ImageCard } from "./ImageCard";
 
-interface DriveItem {
-  id: string;
-  name: string;
-  mimeType: string;
-  thumbnailLink?: string;
-  webContentLink?: string;
-}
+// interface DriveItem {
+//   id: string;
+//   name: string;
+//   mimeType: string;
+//   thumbnailLink?: string;
+//   webContentLink?: string;
+// }
 
 interface FolderExplorerProps {
   folderId: string;
+  resourceKey?: string;
 }
 
-export default function FolderExplorer({ folderId }: FolderExplorerProps) {
+export default function FolderExplorer({
+  folderId,
+  resourceKey,
+}: FolderExplorerProps) {
   const navigate = useNavigate();
 
   const [items, setItems] = useState<DriveItem[]>([]); // Current folder items
@@ -55,7 +59,7 @@ export default function FolderExplorer({ folderId }: FolderExplorerProps) {
 
   useEffect(() => {
     load();
-  }, [currentFolderId]);
+  }, [currentFolderId, resourceKey]);
 
   useEffect(() => {
     if (!lightboxImage) return;
@@ -146,9 +150,16 @@ export default function FolderExplorer({ folderId }: FolderExplorerProps) {
   }
 
   function getImageUrl(image: DriveItem) {
-    return `https://www.googleapis.com/drive/v3/files/${image.id}?alt=media&key=${
-      import.meta.env.VITE_GOOGLE_API_KEY
-    }`;
+    const params = new URLSearchParams({
+      alt: "media",
+      key: import.meta.env.VITE_GOOGLE_API_KEY,
+    });
+
+    if (image.resourceKey) {
+      params.set("resourceKey", image.resourceKey);
+    }
+
+    return `https://www.googleapis.com/drive/v3/files/${image.id}?${params.toString()}`;
   }
 
   function getPreviewUrl(image: DriveItem) {
@@ -160,7 +171,9 @@ export default function FolderExplorer({ folderId }: FolderExplorerProps) {
   async function load() {
     try {
       setLoading(true);
-      const data = await fetchFolderContents(currentFolderId);
+
+      const data = await fetchFolderContents(currentFolderId, resourceKey);
+
       setItems(data.files ?? []);
     } catch (error) {
       console.error("Erro ao carregar pasta:", error);
@@ -176,6 +189,11 @@ export default function FolderExplorer({ folderId }: FolderExplorerProps) {
       params: {
         folderId: folder.id,
       },
+      search: folder.resourceKey
+        ? {
+            resourceKey: folder.resourceKey,
+          }
+        : {},
     });
   }
 
