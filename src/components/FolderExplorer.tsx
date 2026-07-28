@@ -1,18 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardMedia,
-  Button,
-  CircularProgress,
-  Dialog,
-  IconButton,
-} from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import DownloadIcon from "@mui/icons-material/Download";
-import CloseIcon from "@mui/icons-material/Close";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import { CircularProgress } from "@mui/material";
 import { fetchFolderContents, type DriveItem } from "../services/drive";
 import FolderCard from "./FolderCard";
 import { useNavigate } from "@tanstack/react-router";
@@ -160,12 +147,6 @@ export default function FolderExplorer({
     }
 
     return `https://www.googleapis.com/drive/v3/files/${image.id}?${params.toString()}`;
-  }
-
-  function getPreviewUrl(image: DriveItem) {
-    return image.thumbnailLink
-      ? image.thumbnailLink.replace("=s220", "=s800")
-      : getImageUrl(image);
   }
 
   async function load() {

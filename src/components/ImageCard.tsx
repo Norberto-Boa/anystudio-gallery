@@ -9,12 +9,7 @@ interface ImageCardProps {
   onOpen: () => void;
 }
 
-export function ImageCard({
-  image,
-  previewUrl,
-  downloadUrl,
-  onOpen,
-}: ImageCardProps) {
+export function ImageCard({ previewUrl, downloadUrl, onOpen }: ImageCardProps) {
   return (
     <Card
       className="rounded-xl shadow break-inside-avoid cursor-pointer"

@@ -83,7 +83,7 @@ export function Lightbox({
                     download
                     target="_blank"
                     rel="noreferrer"
-                    className="!w-11 !h-11 md:!w-12 md:!h-12 !text-white !bg-white/15 hover:!bg-white/25 !backdrop-blur-md"
+                    className="w-11! h-11! md:w-12! md:h-12! text-white! bg-white/1! hover:bg-white/25! backdrop-blur-md!"
                   >
                     <DownloadIcon />
                   </IconButton>
@@ -91,7 +91,7 @@ export function Lightbox({
 
                 <IconButton
                   onClick={onClose}
-                  className="!w-11 !h-11 md:!w-12 md:!h-12 !text-white !bg-white/10 hover:!bg-white/20 !border !border-white"
+                  className="w-11! h-11! md:w-12! md:h-12! text-white! bg-white/10! hover:bg-white/20! border! border-white!"
                 >
                   <CloseIcon />
                 </IconButton>
@@ -103,7 +103,7 @@ export function Lightbox({
               {imageLoading && (
                 <div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none">
                   <div className="flex flex-col items-center gap-3 rounded-2xl bg-black/40 px-6 py-5 text-white backdrop-blur-md">
-                    <CircularProgress size={34} className="!text-white" />
+                    <CircularProgress size={34} className="text-white!" />
                     <span className="text-sm">Loading image...</span>
                   </div>
                 </div>
@@ -113,7 +113,7 @@ export function Lightbox({
                 <IconButton
                   onClick={onPrevious}
                   disabled={imageLoading}
-                  className="!absolute left-3 md:left-5 top-1/2 -translate-y-1/2 z-30 !w-11 !h-11 md:!w-14 md:!h-14 !text-white !bg-black/40 hover:!bg-black/70 disabled:!opacity-40"
+                  className="absolute! left-3 md:left-5 top-1/2 -translate-y-1/2 z-30 w-11! h-11! md:w-14! md:h-14! text-white! bg-black/40! hover:bg-black/70! disabled:opacity-40!"
                 >
                   <ChevronLeftIcon fontSize="large" />
                 </IconButton>
@@ -123,7 +123,7 @@ export function Lightbox({
                 <IconButton
                   onClick={onNext}
                   disabled={imageLoading}
-                  className="!absolute right-3 md:right-5 top-1/2 -translate-y-1/2 z-30 !w-11 !h-11 md:!w-14 md:!h-14 !text-white !bg-black/40 hover:!bg-black/70 disabled:!opacity-40"
+                  className="absolute! right-3 md:right-5 top-1/2 -translate-y-1/2 z-30 w-11! h-11! md:w-14! md:h-14! text-white! bg-black/40! hover:bg-black/70! disabled:opacity-40!"
                 >
                   <ChevronRightIcon fontSize="large" />
                 </IconButton>
