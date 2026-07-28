@@ -6,12 +6,18 @@ export interface DriveItem {
   mimeType: string;
   thumbnailLink?: string;
   webContentLink?: string;
+  resourceKey?: string;
+}
+
+interface DriveResponse {
+  files?: DriveItem[];
+  nextPageToken?: string;
 }
 
 export async function fetchFolderContents(
   folderId: string,
-  pageToken?: string,
-) {
+  resourceKey?: string,
+): Promise<DriveResponse> {
   const params = new URLSearchParams({
     q: `'${folderId}' in parents`,
     fields:
@@ -23,7 +29,7 @@ export async function fetchFolderContents(
     key: API_KEY,
   });
 
-  if (pageToken) params.append("pageToken", pageToken);
+  if (resourceKey) params.append("resourceKey", resourceKey);
 
   const res = await fetch(
     `https://www.googleapis.com/drive/v3/files?${params.toString()}`,
@@ -34,7 +40,10 @@ export async function fetchFolderContents(
   return res.json();
 }
 
-export async function fetchFolderCover(folderId: string) {
+export async function fetchFolderCover(
+  folderId: string,
+  resourceKey?: string,
+): Promise<DriveItem | null> {
   const params = new URLSearchParams({
     q: `'${folderId}' in parents and mimeType contains 'image/' and trashed = false`,
     fields: "files(id,thumbnailLink, mimeType,webContentLink)",
@@ -44,6 +53,10 @@ export async function fetchFolderCover(folderId: string) {
     includeItemsFromAllDrives: "true",
     key: import.meta.env.VITE_GOOGLE_API_KEY,
   });
+
+  if (resourceKey) {
+    params.set("resourceKey", resourceKey);
+  }
 
   const res = await fetch(
     `https://www.googleapis.com/drive/v3/files?${params}`,
