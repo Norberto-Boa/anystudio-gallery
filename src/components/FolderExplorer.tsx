@@ -198,7 +198,7 @@ export default function FolderExplorer({
   }
 
   function getDownloadUrl(image: DriveItem) {
-    return image.webContentLink ?? getImageUrl(image);
+    return getImageUrl(image);
   }
 
   const lightboxImageUrl = lightboxImage

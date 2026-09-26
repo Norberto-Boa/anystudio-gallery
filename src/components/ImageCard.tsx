@@ -1,6 +1,8 @@
 import { Button, Card, CardMedia } from "@mui/material";
 import type { DriveItem } from "../services/drive";
 import DownloadIcon from "@mui/icons-material/Download";
+import { downloadFileFromUrl } from "../utils/download";
+// import { downloadFileFromUrl, openDownloadInNewTab } from "../utils/download";
 
 interface ImageCardProps {
   image: DriveItem;
@@ -9,7 +11,9 @@ interface ImageCardProps {
   onOpen: () => void;
 }
 
-export function ImageCard({ previewUrl, downloadUrl, onOpen }: ImageCardProps) {
+
+
+export function ImageCard({ previewUrl, downloadUrl, onOpen, image }: ImageCardProps) {
   return (
     <Card
       className="rounded-xl shadow break-inside-avoid cursor-pointer"
@@ -29,11 +33,12 @@ export function ImageCard({ previewUrl, downloadUrl, onOpen }: ImageCardProps) {
           size="small"
           variant="outlined"
           startIcon={<DownloadIcon />}
-          href={downloadUrl}
-          download
-          target="_blank"
-          rel="noreferrer"
-          onClick={(event) => event.stopPropagation()}
+          onClick={async (event) => {
+            event.preventDefault()
+            event.stopPropagation();
+
+            await downloadFileFromUrl(downloadUrl, image.name);
+          }}
         >
           Download
         </Button>

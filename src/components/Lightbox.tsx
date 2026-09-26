@@ -4,6 +4,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import type { DriveItem } from "../services/drive";
 import { CircularProgress, Dialog, IconButton } from "@mui/material";
+import { downloadFileFromUrl } from "../utils/download";
 
 interface LightboxProps {
   image: DriveItem | null;
@@ -78,11 +79,14 @@ export function Lightbox({
               <div className="flex shrink-0 items-center gap-3">
                 {downloadUrl && (
                   <IconButton
-                    component="a"
-                    href={downloadUrl}
-                    download
-                    target="_blank"
-                    rel="noreferrer"
+                    onClick={ async (event) => {
+                      event.preventDefault();
+                      event.stopPropagation();
+
+                      if (downloadUrl) {
+                        await downloadFileFromUrl(downloadUrl, image.name);
+                      }
+                    }}
                     className="w-11! h-11! md:w-12! md:h-12! text-white! bg-white/1! hover:bg-white/25! backdrop-blur-md!"
                   >
                     <DownloadIcon />
